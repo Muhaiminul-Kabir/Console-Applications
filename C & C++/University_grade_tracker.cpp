@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include <cstdio>
 
 using namespace std;
 
@@ -18,6 +18,9 @@ char dpath[]= "/storage/emulated/0/Database/";
 char file[] ="";
 char ext[5] = ".txt";
 char pFolder[] = "/storage/emulated/0/Database/";
+char univar[]="";
+
+
 struct userData {
 
     char passCode[1000000];
@@ -25,7 +28,17 @@ struct userData {
 
 };
 
+enum menu {
+    INIT,
+    BASE,
+    MAIN
+};
+
+
 typedef struct userData User;
+typedef enum menu menu;
+
+menu _menu = BASE;
 
 
 User getPass(bool showPass) {
@@ -65,13 +78,21 @@ void cls() {
 
 
 void makeDir(char* name) {
-#ifdef __linux__ 
-    mkdir(name, 777); 
+#ifdef __linux__
+    mkdir(name, 777);
 #else
-    _mkdir(name); 
-#endif 
+    _mkdir(name);
+#endif
 }
 
+
+void waitCls(){
+
+    if(_getch()){
+        cls();
+    }
+
+}
 
 void getUserName() {
 
@@ -90,44 +111,50 @@ void getUserName() {
 
 
 void errorMsg(bool msg) {
-    if(msg){
+    if(msg) {
         cout<< "Incorrect Password";
     }
-    else{
+    else {
         cout<< "Something went wrong.";
     }
     cout<<endl<<"press enter to go back";
     char r = _getch();
-    if(r == '\n'){
+    if(_menu != MAIN && r == '\n') {
+        _menu = BASE;
         cls();
     }
-    else{
+    else if(_menu == MAIN && r == '\n'){
+        _menu = MAIN;
+        cls();
+    }
+    else {
         errorMsg(false);
     }
 
 }
 
-void wlcmMsg(bool msg){
+void wlcmMsg(bool msg) {
 
-    if(msg){
+    if(msg) {
         cout<< "Log In Successful";
     }
-    else{
+    else {
         cout<<"Congratulations!! Done successfully";
     }
     cout<<endl<<"press enter to proceed";
     char r = _getch();
-    if(r == '\n'){
+    if(r == '\n') {
         cls();
-        //mainMenu();
+        _menu = MAIN;
     }
-    else{
+    else {
         errorMsg(false);
     }
+    
 
 }
 
-void creatPF(){
+void creatPF() {
 
     strcat(pFolder,name);
     makeDir(pFolder);
@@ -136,45 +163,76 @@ void creatPF(){
 
 
 void fileLinker(char *fileName) {
-    
+
     creatPF();
-  //  strcat(file,pFolder);
     strcat(pFolder,fileName);
     strcat(pFolder,ext);
+    strcpy(univar,dpath);
+    strcat(univar,"link.txt");
+    ofstream myfile (univar);
+    if (myfile.is_open()) {
+        for(int i = 0; pFolder[i]!='\0'; i++) {
+            myfile<<pFolder[i];
+        }
+        myfile.close();
+    }
 
 }
 
 
+void changePass(char *pass){
+    char h[100000];
+    FILE *f = fopen(univar,"r");
+    for(;;){
+        fgets(h,1000000,f);
+        if(feof(f)){
+            break;
+        }
+    
+    }
+    fclose(f);
+    cout<<endl<< "Enter new password"<<endl;
+    getPass(true);
+    ofstream myfile (h);
+    if (myfile.is_open()) {
+        for(int i = 0; pass[i]!='\0'; i++) {
+            myfile<<pass[i];
+        }
+        myfile.close();
+    }
+    
+    
+}
 
 
 
 bool readPass(User lcl) {
-  
+
     FILE *f = fopen(pFolder,"r");
-    if(f == NULL){
+    if(f == NULL) {
         cout<<"Invalid Username";
     }
     fscanf(f,"%s",lcl.passCode);
-    if(strcmp(lcl.passCode,pass) != 0){
+    if(strcmp(lcl.passCode,pass) != 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 
-
+    fclose(f);
 
 }
 
 
 void checkData() {
     User temp;
-    if(readPass(temp)){
+    if(readPass(temp)) {
         errorMsg(true);
         strcpy(pFolder,dpath);
-        
+
     }
-    else{
+    else {
         wlcmMsg(true);
     }
 
@@ -193,16 +251,15 @@ void dataIn() {
 
 void logIn() {
 
-    cout <<"Plese login to enter";
-    dataIn();    
+    cout <<"---------Plese login to enter---------"<<endl;
+    dataIn();
     fileLinker("/password");
     checkData();
-    //cls();
 
 }
 
 
-void passEntry(User lcl) {
+void passEntry(User lcl,bool way) {
 
     ofstream myfile (pFolder);
     if (myfile.is_open()) {
@@ -210,7 +267,15 @@ void passEntry(User lcl) {
             myfile<<lcl.passCode[i];
         }
         myfile.close();
-        cout<<"sccess";
+        if(way){
+            cout<<"sccess";
+        }
+        else{
+            cout<<"Password changed successfully";
+        }
+        if(_getch()){
+             _menu = MAIN;
+        }
     }
     else cout << "Unable to open file";
 
@@ -229,18 +294,58 @@ void newUser() {
     fileLinker("/password");
     puts(x.userName);
     puts(pFolder);
-    passEntry(x);
+    passEntry(x,true);
 
+}
+
+
+void logOut() {
+
+    strcpy(pass,"\0");
+    strcpy(name,"\0");
+    strcpy(pFolder,dpath);
+    _menu = BASE;
+
+}
+
+void options() {
+
+    cout <<" [1] Update Semester"<<endl;
+    cout <<" [2] Semester wise GPA"<<endl;
+    cout <<" [3] Update CGPA"<<endl;
+    cout <<" [4] Change Password"<<endl;
+    cout <<" [5] Log out"<<endl;
+
+}
+
+
+void mainMenu() {
+
+    puts(name);
+
+    options();
+    char i = _getch();
+    if(i == '5') {
+        logOut();
+        cls();
+
+    }
+    if(i == '4') {
+        changePass(pass);
+        cls();
+
+    }
+    
 }
 
 
 void signUp() {
 
     newUser();
-    strcpy(pass,"\0");
-    strcpy(name,"\0");
-    strcpy(pFolder,dpath);
-    // cls();
+    if(_menu == BASE){
+        strcpy(pFolder,dpath);
+    }
+    cls();
 
 }
 
@@ -255,11 +360,11 @@ void base() {
         cls();
         logIn();
     }
-    else if(in == 'n'){
+    else if(in == 'n') {
         cls();
         signUp();
     }
-    else{
+    else {
         errorMsg(false);
     }
 
@@ -269,9 +374,14 @@ void base() {
 int main()
 {
     for(;;) {
-
-        base();
-
+        cout<<endl ;
+        cout<<endl ;
+        if(_menu == BASE) {
+            base();
+        }
+        else if(_menu == MAIN) {
+            mainMenu();
+        }
     }
     return 0;
 }

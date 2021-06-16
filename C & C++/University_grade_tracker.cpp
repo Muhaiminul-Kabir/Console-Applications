@@ -8,8 +8,6 @@
 #include <unistd.h>
 
 
-
-
 using namespace std;
 
 
@@ -20,7 +18,6 @@ char dpath[]= "/storage/emulated/0/Database/";
 char file[] ="";
 char ext[5] = ".txt";
 char pFolder[] = "/storage/emulated/0/Database/";
-
 struct userData {
 
     char passCode[1000000];
@@ -150,7 +147,6 @@ void creatFile(User lcl, char *fileName) {
     
     creatPF();
   //  strcat(file,pFolder);
-    strcat(pFolder,slash);
     strcat(pFolder,fileName);
     strcat(pFolder,ext);
 
@@ -181,9 +177,9 @@ void newUser() {
     cout<<"Enter new password -> ";
     getPass(true);
     strcpy(x.passCode,pass);
-    creatFile(x,"password");
+    creatFile(x,"/password");
     puts(x.userName);
-    puts(file);
+    puts(pFolder);
     passEntry(x);
 
 }

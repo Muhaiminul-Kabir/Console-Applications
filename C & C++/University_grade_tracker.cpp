@@ -17,7 +17,7 @@ struct userData{
 
 typedef struct userData User;
 
-void getPass(User lcl){
+void getPass(User lcl, bool showPass){
     
     for(int i = 0;;i++){
         lcl.passCode[i] = _getch();
@@ -27,7 +27,10 @@ void getPass(User lcl){
               break;
         
         }
-        cout<<'*';
+        if(!showPass){
+            cout<<'*';
+        }
+        else{cout<<lcl.passCode[i];}
         
     }
   //  puts(lcl.passCode);
@@ -72,7 +75,7 @@ void newUser(){
     cout<<"New User Name ->"<<endl;
     getUserName(x);
     cout<<"Enter new password -> ";
-    getPass(x);
+    getPass(x,true);
 
 }
 
@@ -97,9 +100,9 @@ void readPass(){
 
 
 
-void checkPass(){
+bool checkData(){
     
-   
+    
 
 }
 
@@ -110,7 +113,7 @@ void dataIn(){
     cout<<"User Name ->"<<endl;
     getUserName(input);
     cout<<"Enter password -> ";
-    getPass(input);
+    getPass(input,false);
 
 }
 
@@ -119,7 +122,7 @@ void logIn(){
 
     cout <<"Plese login to enter";
     dataIn();
-    //checkPass();
+    checkData();
     cls();
 
 }
@@ -154,8 +157,6 @@ int main()
     for(;;){
     
         home();
-    
-    
     
     }
     return 0;

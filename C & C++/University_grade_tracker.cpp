@@ -6,6 +6,11 @@ using namespace std;
 char pass[4678800];
 char name[1000000];
 
+char *ext = {".txt"};
+char *pFolder = {"Students\ "};
+char *folder = {""};
+char *file = {"storage/emulated/0/c.txt"};
+char *slash = {"\ "};
 
 
 struct userData{
@@ -69,17 +74,6 @@ void getUserName(User lcl){
 }
 
 
-void newUser(){
-
-    User x;
-    cout<<"New User Name ->"<<endl;
-    getUserName(x);
-    cout<<"Enter new password -> ";
-    getPass(x,true);
-
-}
-
-
 void errorMsg(){
     
     cout<< "Incorrect Password";
@@ -88,16 +82,12 @@ void errorMsg(){
 }
 
 
-
 void readPass(){
 
     
 
 
 }
-
-
-
 
 
 bool checkData(){
@@ -127,6 +117,35 @@ void logIn(){
 
 }
 
+/***********bug*********************/
+void creatFile(User lcl, char *fileName){
+    
+
+}
+
+
+void passEntry(User lcl){
+
+    FILE *f = fopen(file,"w+");
+    fprintf(f, "%s", lcl.passCode);
+    fclose(f);
+
+}
+
+
+void newUser(){
+
+    User x;
+    cout<<"New User Name ->"<<endl;
+    getUserName(x);
+    cout<<"Enter new password -> ";
+    getPass(x,true);
+    creatFile(x,"password");
+    passEntry(x);
+
+}
+
+
 void signUp(){
     
     newUser();
@@ -134,7 +153,8 @@ void signUp(){
     
 }
 
-void home(){
+
+void base(){
 
     char in;
     cout<<endl << "If you\'re new then press [N]";
@@ -156,7 +176,7 @@ int main()
 {
     for(;;){
     
-        home();
+        base();
     
     }
     return 0;

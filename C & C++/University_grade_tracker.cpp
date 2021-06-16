@@ -89,51 +89,43 @@ void getUserName() {
 }
 
 
-void errorMsg() {
-
-    cout<< "Incorrect Password";
-
-
-}
-
-
-void readPass() {
-
-
-
-
-}
-
-
-bool checkData() {
-
-
+void errorMsg(bool msg) {
+    if(msg){
+        cout<< "Incorrect Password";
+    }
+    else{
+        cout<< "Something went wrong.";
+    }
+    cout<<endl<<"press enter to go back";
+    char r = _getch();
+    if(r == '\n'){
+        cls();
+    }
+    else{
+        errorMsg(false);
+    }
 
 }
 
+void wlcmMsg(bool msg){
 
-void dataIn() {
-
-    User input;
-    cout<<"User Name ->"<<endl;
-    getUserName();
-    strcpy(input.userName,name);
-    cout<<"Enter password -> ";
-    getPass(false);
-    strcpy(input.passCode,pass);
-
-}
-
-
-void logIn() {
-
-    cout <<"Plese login to enter";
-    dataIn();
-    checkData();
-    cls();
+    if(msg){
+        cout<< "Log In Successful";
+    }
+    else{
+        cout<<"Congratulations!! Done successfully";
+    }
+    cout<<endl<<"press enter to proceed";
+    char r = _getch();
+    if(r == '\n'){
+        cls();
+        //mainMenu();
+    }
+    else{
+        errorMsg(false);
+    }
 
 }
-
 
 void creatPF(){
 
@@ -143,12 +135,69 @@ void creatPF(){
 }
 
 
-void creatFile(User lcl, char *fileName) {
+void fileLinker(char *fileName) {
     
     creatPF();
   //  strcat(file,pFolder);
     strcat(pFolder,fileName);
     strcat(pFolder,ext);
+
+}
+
+
+
+
+
+bool readPass(User lcl) {
+  
+    FILE *f = fopen(pFolder,"r");
+    if(f == NULL){
+        cout<<"Invalid Username";
+    }
+    fscanf(f,"%s",lcl.passCode);
+    if(strcmp(lcl.passCode,pass) != 0){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+
+
+}
+
+
+void checkData() {
+    User temp;
+    if(readPass(temp)){
+        errorMsg(true);
+        strcpy(pFolder,dpath);
+        
+    }
+    else{
+        wlcmMsg(true);
+    }
+
+}
+
+
+void dataIn() {
+
+    cout<<"User Name ->"<<endl;
+    getUserName();
+    cout<<"Enter password -> ";
+    getPass(false);
+
+}
+
+
+void logIn() {
+
+    cout <<"Plese login to enter";
+    dataIn();    
+    fileLinker("/password");
+    checkData();
+    //cls();
 
 }
 
@@ -177,7 +226,7 @@ void newUser() {
     cout<<"Enter new password -> ";
     getPass(true);
     strcpy(x.passCode,pass);
-    creatFile(x,"/password");
+    fileLinker("/password");
     puts(x.userName);
     puts(pFolder);
     passEntry(x);
@@ -188,6 +237,9 @@ void newUser() {
 void signUp() {
 
     newUser();
+    strcpy(pass,"\0");
+    strcpy(name,"\0");
+    strcpy(pFolder,dpath);
     // cls();
 
 }
@@ -203,9 +255,12 @@ void base() {
         cls();
         logIn();
     }
-    else {
+    else if(in == 'n'){
         cls();
         signUp();
+    }
+    else{
+        errorMsg(false);
     }
 
 }

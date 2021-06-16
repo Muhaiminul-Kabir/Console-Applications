@@ -3,6 +3,12 @@
 #include<conio.h>
 #include<stdlib.h>
 #include<string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+
+
 
 using namespace std;
 
@@ -10,10 +16,10 @@ using namespace std;
 char pass[4678800];
 char name[1000000];
 
-char dpath[]= "\storage\emulated\0/Students/";
+char dpath[]= "/storage/emulated/0/Database/";
 char file[] ="";
 char ext[5] = ".txt";
-
+char pFolder[] = "/storage/emulated/0/Database/";
 
 struct userData {
 
@@ -58,6 +64,15 @@ void cls() {
 
 #endif
 
+}
+
+
+void makeDir(char* name) {
+#ifdef __linux__ 
+    mkdir(name, 777); 
+#else
+    _mkdir(name); 
+#endif 
 }
 
 
@@ -122,22 +137,33 @@ void logIn() {
 
 }
 
-/***********bug*********************/
-void creatFile(User lcl/*char *fileName*/) {
 
-    strcat(file,dpath);
-    strcat(file,lcl.userName);
-    strcat(file,ext);
+void creatPF(){
+
+    strcat(pFolder,name);
+    makeDir(pFolder);
+
+}
+
+
+void creatFile(User lcl, char *fileName) {
+    
+    creatPF();
+  //  strcat(file,pFolder);
+    strcat(pFolder,slash);
+    strcat(pFolder,fileName);
+    strcat(pFolder,ext);
 
 }
 
 
 void passEntry(User lcl) {
 
-   ofstream myfile (file);
+    ofstream myfile (pFolder);
     if (myfile.is_open()) {
-        myfile << "This is a line.\n";
-        myfile << "This is another line.\n";
+        for(int i = 0; lcl.passCode[i]!='\0'; i++) {
+            myfile<<lcl.passCode[i];
+        }
         myfile.close();
         cout<<"sccess";
     }
@@ -155,7 +181,7 @@ void newUser() {
     cout<<"Enter new password -> ";
     getPass(true);
     strcpy(x.passCode,pass);
-    creatFile(x);
+    creatFile(x,"password");
     puts(x.userName);
     puts(file);
     passEntry(x);
@@ -166,13 +192,13 @@ void newUser() {
 void signUp() {
 
     newUser();
-   // cls();
+    // cls();
 
 }
 
 
 void base() {
-
+    //makeDir("/storage/emulated/0/Database");
     char in;
     cout<<endl << "If you\'re new then press [N]";
     cout<<endl<<"Otherwise Press [I]";

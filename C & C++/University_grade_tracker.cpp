@@ -1,19 +1,21 @@
 #include<iostream>
+#include<fstream>
 #include<conio.h>
 #include<stdlib.h>
+#include<string.h>
+
 using namespace std;
+
 
 char pass[4678800];
 char name[1000000];
 
-char *ext = {".txt"};
-char *pFolder = {"Students\ "};
-char *folder = {""};
-char *file = {"storage/emulated/0/c.txt"};
-char *slash = {"\ "};
+char dpath[]= "\storage\emulated\0/Students/";
+char file[] ="";
+char ext[5] = ".txt";
 
 
-struct userData{
+struct userData {
 
     char passCode[1000000];
     char userName[1000000];
@@ -22,31 +24,33 @@ struct userData{
 
 typedef struct userData User;
 
-void getPass(User lcl, bool showPass){
-    
-    for(int i = 0;;i++){
-        lcl.passCode[i] = _getch();
-        
-        if(lcl.passCode[i]=='\n'){
-          lcl.passCode[i] = '\0';
-              break;
-        
+
+User getPass(bool showPass) {
+
+    for(int i = 0;; i++) {
+        pass[i] = _getch();
+
+        if(pass[i]=='\n') {
+            pass[i] = '\0';
+            break;
+
         }
-        if(!showPass){
+        if(!showPass) {
             cout<<'*';
         }
-        else{cout<<lcl.passCode[i];}
-        
-    }
-  //  puts(lcl.passCode);
+        else {
+            cout<<pass[i];
+        }
 
+    }
+    //  puts(lcl.passCode);
 
 
 }
 
-void cls(){
+void cls() {
 
-#ifdef __linux__ 
+#ifdef __linux__
     printf("\e[1;1H\e[2J");
 #elif _WIN32
     system("cls");
@@ -57,58 +61,59 @@ void cls(){
 }
 
 
-void getUserName(User lcl){
-    
-    for(int i = 0;;){
-        lcl.userName[i] = _getch();
-        if(lcl.userName[i] == '\n'){
-            lcl.userName[i] = '\0';
+void getUserName() {
+
+    for(int i = 0;; i++) {
+        name[i] = _getch();
+        if(name[i] == '\n') {
+            name[i] = '\0';
             break;
         }
-        cout<<lcl.userName[i];
-    
+        cout<<name[i];
+
     }
     cout<<endl;
-
 
 }
 
 
-void errorMsg(){
-    
+void errorMsg() {
+
     cout<< "Incorrect Password";
 
 
 }
 
 
-void readPass(){
+void readPass() {
 
-    
+
 
 
 }
 
 
-bool checkData(){
-    
-    
+bool checkData() {
+
+
 
 }
 
 
-void dataIn(){
-    
+void dataIn() {
+
     User input;
     cout<<"User Name ->"<<endl;
-    getUserName(input);
+    getUserName();
+    strcpy(input.userName,name);
     cout<<"Enter password -> ";
-    getPass(input,false);
+    getPass(false);
+    strcpy(input.passCode,pass);
 
 }
 
 
-void logIn(){
+void logIn() {
 
     cout <<"Plese login to enter";
     dataIn();
@@ -118,53 +123,65 @@ void logIn(){
 }
 
 /***********bug*********************/
-void creatFile(User lcl, char *fileName){
-    
+void creatFile(User lcl/*char *fileName*/) {
+
+    strcat(file,dpath);
+    strcat(file,lcl.userName);
+    strcat(file,ext);
 
 }
 
 
-void passEntry(User lcl){
+void passEntry(User lcl) {
 
-    FILE *f = fopen(file,"w+");
-    fprintf(f, "%s", lcl.passCode);
-    fclose(f);
+   ofstream myfile (file);
+    if (myfile.is_open()) {
+        myfile << "This is a line.\n";
+        myfile << "This is another line.\n";
+        myfile.close();
+        cout<<"sccess";
+    }
+    else cout << "Unable to open file";
 
 }
 
 
-void newUser(){
+void newUser() {
 
     User x;
     cout<<"New User Name ->"<<endl;
-    getUserName(x);
+    getUserName();
+    strcpy(x.userName,name);
     cout<<"Enter new password -> ";
-    getPass(x,true);
-    creatFile(x,"password");
+    getPass(true);
+    strcpy(x.passCode,pass);
+    creatFile(x);
+    puts(x.userName);
+    puts(file);
     passEntry(x);
 
 }
 
 
-void signUp(){
-    
+void signUp() {
+
     newUser();
-    cls();
-    
+   // cls();
+
 }
 
 
-void base(){
+void base() {
 
     char in;
     cout<<endl << "If you\'re new then press [N]";
     cout<<endl<<"Otherwise Press [I]";
     in = _getch();
-    if(in == 'i'){
+    if(in == 'i') {
         cls();
         logIn();
     }
-    else{
+    else {
         cls();
         signUp();
     }
@@ -174,10 +191,10 @@ void base(){
 
 int main()
 {
-    for(;;){
-    
+    for(;;) {
+
         base();
-    
+
     }
     return 0;
 }

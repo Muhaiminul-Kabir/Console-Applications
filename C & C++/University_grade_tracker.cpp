@@ -16,10 +16,12 @@ char name[1000000];
 unsigned char code[1000000];
 char tem[1000000];
 
-char dpath[]= "/storage/emulated/0/Database/";
+
+char folder[] = "/storage/emulated/0/uni_grade_SYS";
+char dpath[]= "/storage/emulated/0/uni_grade_SYS/Database/";
 char file[] ="";
-char ext[5] = ".txt";
-char pFolder[] = "/storage/emulated/0/Database/";
+char ext[5] = ".dat";
+char pFolder[] = "/storage/emulated/0/uni_grade_SYS/Database/";
 char univar[]="";
 
 
@@ -64,12 +66,6 @@ void decode() {
     }
 
 }
-
-
-
-
-
-
 
 
 void getPass(bool showPass) {
@@ -330,8 +326,9 @@ void newUser() {
     getPass(true);
     strcpy(x.passCode,pass);
     fileLinker("/password","link.dat");
-    puts(x.userName);
-    puts(pFolder);
+    //puts(x.userName);
+    //puts(pFolder);
+    cout<<endl;
     passEntry(true);
 
 }
@@ -372,6 +369,10 @@ void mainMenu() {
         changePass(pass);
         cls();
 
+    }
+    else{
+        cls();
+    
     }
 
 }
@@ -419,9 +420,7 @@ void getSem() {
 void mainLoop() {
 
     for(;;) {
-        cout<<endl ;
-        cout<<endl ;
-        if(_menu == BASE) {
+        cout<<endl<<endl ;        if(_menu == BASE) {
             base();
         }
         else if(_menu == MAIN) {
@@ -436,6 +435,7 @@ void mainLoop() {
 
 int main()
 {
+    makeDir(folder);
     makeDir(dpath);
     // makeDir(temp);
     mainLoop();

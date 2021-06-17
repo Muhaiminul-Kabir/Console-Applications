@@ -181,6 +181,7 @@ void fileLinker(char *fileName, char *linker) {
 
 
 void changePass(char *pass){
+
     char h[100000];
     FILE *f = fopen(univar,"r");
     for(;;){
@@ -226,6 +227,7 @@ bool readPass(User lcl) {
 
 
 void checkData() {
+
     User temp;
     if(readPass(temp)) {
         errorMsg(true);
@@ -292,7 +294,7 @@ void newUser() {
     cout<<"Enter new password -> ";
     getPass(true);
     strcpy(x.passCode,pass);
-    fileLinker("/password","link.txt");
+    fileLinker("/password","link.dat");
     puts(x.userName);
     puts(pFolder);
     passEntry(x,true);
@@ -372,12 +374,15 @@ void base() {
 
 }
 
+void getSem(){
+
+    
+
+}
 
 
+void mainLoop(){
 
-int main()
-{
-    makeDir(dpath);
     for(;;) {
         cout<<endl ;
         cout<<endl ;
@@ -388,5 +393,16 @@ int main()
             mainMenu();
         }
     }
+
+}
+
+
+
+
+int main()
+{
+    makeDir(dpath);
+    // makeDir(temp);
+    mainLoop();
     return 0;
 }

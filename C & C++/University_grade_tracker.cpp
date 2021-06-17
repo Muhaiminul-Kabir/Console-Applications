@@ -162,13 +162,13 @@ void creatPF() {
 }
 
 
-void fileLinker(char *fileName) {
+void fileLinker(char *fileName, char *linker) {
 
     creatPF();
     strcat(pFolder,fileName);
     strcat(pFolder,ext);
     strcpy(univar,dpath);
-    strcat(univar,"link.txt");
+    strcat(univar,linker);
     ofstream myfile (univar);
     if (myfile.is_open()) {
         for(int i = 0; pFolder[i]!='\0'; i++) {
@@ -251,9 +251,9 @@ void dataIn() {
 
 void logIn() {
 
-    cout <<"---------Plese login to enter---------"<<endl;
+    cout <<"---------Plese login to enter---------"<<endl<<endl;
     dataIn();
-    fileLinker("/password");
+    fileLinker("/password","link.txt");
     checkData();
 
 }
@@ -268,11 +268,12 @@ void passEntry(User lcl,bool way) {
         }
         myfile.close();
         if(way){
-            cout<<"sccess";
+            cout<<"Registered successfully. ";
         }
         else{
             cout<<"Password changed successfully";
         }
+        cout<<endl<<"PRESS ANY KEY TO PROCEED";
         if(_getch()){
              _menu = MAIN;
         }
@@ -291,7 +292,7 @@ void newUser() {
     cout<<"Enter new password -> ";
     getPass(true);
     strcpy(x.passCode,pass);
-    fileLinker("/password");
+    fileLinker("/password","link.txt");
     puts(x.userName);
     puts(pFolder);
     passEntry(x,true);
@@ -353,8 +354,9 @@ void signUp() {
 void base() {
     //makeDir("/storage/emulated/0/Database");
     char in;
-    cout<<endl << "If you\'re new then press [N]";
-    cout<<endl<<"Otherwise Press [I]";
+    cout<<"Welcome to University Grade Tracking"<<endl <<"              System";
+    cout<<endl <<endl<<"     If you\'re new then press [N]";
+    cout<<endl<<"          Otherwise Press [I]";
     in = _getch();
     if(in == 'i') {
         cls();
@@ -371,8 +373,11 @@ void base() {
 }
 
 
+
+
 int main()
 {
+    makeDir(dpath);
     for(;;) {
         cout<<endl ;
         cout<<endl ;
